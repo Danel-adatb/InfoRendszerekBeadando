@@ -1,0 +1,45 @@
+.col {
+    background-color: #fff;
+    max-width: 600px;
+    margin-top: 10px;
+    padding: 50px 70px;
+    border-radius: 30px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.075);
+    margin: 30px auto;
+}
+
+.page-title {
+    text-align: center;
+    background-color: red;
+    border-radius: 50%;
+    font-size: 15px;
+    color: white;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    margin-bottom: 50px;
+    line-height: 100px;
+}
+
+.btn {
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 5px 50px 5px 50px;
+    width: 100%;
+}
+
+.btn-warning {
+    background: none red;
+    color: #ffffff;
+    fill: #ffffff;
+    border: none;
+    text-decoration: none;
+    outline: 0;
+    box-shadow: -1px 6px 19px rgba(247, 129, 10, 0.25);
+    border-radius: 100px;
+}
+
+ul li {
+    text-decoration: none;
+}
