@@ -12,6 +12,7 @@ import { UserService } from '../service/user.service';
 export class LoginComponent implements OnInit {
   form!: FormGroup;
   submitted = false;
+  errorMessage: string | undefined = undefined;
 
   constructor(private user: UserService, private formBuilder: FormBuilder, private router: Router) { }
 
@@ -38,6 +39,8 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.user.login(email, password).subscribe();
+    this.user.login(email, password).subscribe(() => (this.router.navigateByUrl('/')),(err) => {
+      this.errorMessage = 'Check your email or password';
+    });
   }
 }

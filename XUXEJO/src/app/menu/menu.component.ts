@@ -26,6 +26,7 @@ export class MenuComponent implements OnInit{
   orderables: FOODS[] = foodsJSON;
   userId!: Pick<User, 'id'>;
   form!: FormGroup;
+  response: string | undefined = undefined;
 
   constructor(private menuService: MenuService, private userService: UserService, private formBuilder: FormBuilder, private router: Router) {}
 
@@ -59,6 +60,8 @@ export class MenuComponent implements OnInit{
     }
 
     onSubmit(formData: Partial<Menu>): void {
-      this.menuService.createOrder(formData, this.userId).pipe().subscribe();
+      this.menuService.createOrder(formData, this.userId).pipe().subscribe(() => {
+        this.response = 'Added succesfully: ' + formData.foodName;
+      });
     }
 }

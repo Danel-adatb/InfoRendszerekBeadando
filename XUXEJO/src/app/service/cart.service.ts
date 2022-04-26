@@ -1,9 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Menu } from '../model/menu';
-import { catchError, first, Observable } from 'rxjs';
+import { catchError, first, Observable, throwError } from 'rxjs';
 import { Cart } from '../model/cart';
-import { HandlingService } from './error-handling/error.handling.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,24 +12,24 @@ export class CartService {
     headers: new HttpHeaders({"Content-Type": "application/json"}),
   }
 
-  constructor(private http: HttpClient, private errorHandler: HandlingService) { }
+  constructor(private http: HttpClient) { }
 
   //Fetch all foods
   getOrders(): Observable<Menu[]> {
     return this.http.get<Menu[]>('/api/orders', {responseType: 'json'}).pipe(
-      //catchError(this.errorHandler.handleError<Menu[]>('getOrders', []))
+      catchError(this.ErrorHandler)
     );
   }
   
   getMaxPrice(): Observable<Menu[]> {
     return this.http.get<Menu[]>('/api/getMaxPrice').pipe(
-      catchError(this.errorHandler.handleError<Menu[]>('getMaxPrice', []))
+      catchError(this.ErrorHandler)
     );
   }
 
   getMaxPrep(): Observable<Menu[]> {
     return this.http.get<Menu[]>('/api/getMaxPrep').pipe(
-      catchError(this.errorHandler.handleError<Menu[]>('getMaxPrep', []))
+      catchError(this.ErrorHandler)
     );
   }
 
@@ -42,21 +41,34 @@ export class CartService {
         this.httpOptions
       )
       .pipe(
-        catchError(this.errorHandler.handleError<Cart>("addFinal"))
+        catchError(this.ErrorHandler)
       );
   }
 
   deleteOrder(id: Pick<Menu, 'id'>): Observable<{}> {
-    return this.http.delete<Menu>('/api/deleteOrder/'+id, this.httpOptions)
-      .pipe(
+    return this.http.delete<Menu>('/api/deleteOrder/'+id, this.httpOptions).pipe(
         first(),
-        catchError(this.errorHandler.handleError<Menu>("deleteOrder"))
+        catchError(this.ErrorHandler)
       );
   }
 
-  deleteAll(): Observable<{}> {
+  deleteAll() {
     return this.http.delete<Menu>('/api/deleteAllOrder', this.httpOptions).pipe(
-      catchError(this.errorHandler.handleError<Menu>("deleteAllOrder"))
+      catchError(this.ErrorHandler)
     );
+  }
+
+  private ErrorHandler(error: HttpErrorResponse) {
+    if (error.status === 0) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error('An error occurred:', error.error);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong.
+      console.error(
+        `Backend returned code ${error.status}, body was: `, error.error);
+    }
+    // Return an observable with a user-facing error message.
+    return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 }

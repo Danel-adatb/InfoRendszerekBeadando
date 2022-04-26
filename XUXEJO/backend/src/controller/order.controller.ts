@@ -86,10 +86,7 @@ export class OrderController extends Controller {
 
             res.status(200).json(del);
         } catch(err) {
-            if(!err.statusCode) {
-                err.statusCode = 500;
-            }
-            next(err);
+            res.json({message: "Something went wrong", error: err})
         }
     }
 }

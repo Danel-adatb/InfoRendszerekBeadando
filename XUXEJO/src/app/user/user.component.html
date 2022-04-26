@@ -7,7 +7,7 @@
                 <strong>Email:</strong><i class="mr-5"> {{user.email }}</i>
                 <strong>Number:</strong><i class="mr-5"> {{ user.number }}</i>
                 <strong>Role:</strong><i class="mr-5"> {{ user.role }}</i>
-                <button class="btn btn-warning" *ngIf="isAdmin" (click)="delete(user.id)">X</button>
+                <button class="btn btn-warning" *ngIf="isAdmin && !(user.id == userId)" (click)="delete(user.id)">X</button>
             </div>
         </div>
     </div>

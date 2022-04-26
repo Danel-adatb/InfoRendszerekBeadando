@@ -12,7 +12,7 @@ import { UserService } from '../service/user.service';
 export class RegisterComponent implements OnInit {
   form!: FormGroup;
   submitted = false;
-  errorMessage: any;
+  errorMessage: string | undefined = undefined;
 
   constructor(private user: UserService, private formBuilder: FormBuilder, private router: Router) { }
 
@@ -54,7 +54,9 @@ export class RegisterComponent implements OnInit {
 
     this.user.register(this.form.value).pipe().subscribe(() => (
       this.router.navigateByUrl('/login')
-    ));
+    ), (err) => {
+      this.errorMessage = 'Email already in use!';
+    });
   }
 
 }

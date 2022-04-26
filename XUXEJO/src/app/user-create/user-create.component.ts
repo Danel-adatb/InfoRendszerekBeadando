@@ -13,6 +13,7 @@ import { UserService } from '../service/user.service';
 export class UserCreateComponent implements OnInit {
   form!: FormGroup;
   users$!: Observable<User[]>;
+  errorMessage: string | undefined = undefined;
 
   userRole!: string;
   isAdmin: boolean = false;
@@ -76,7 +77,9 @@ export class UserCreateComponent implements OnInit {
       .createUser(this.form.value).pipe().subscribe(() => (
         this.router.navigateByUrl('/user'),
         this.users$ = this.fetchAll() 
-      ));
+      ), (err) => {
+        this.errorMessage = 'Email already in use!';
+      });
   }
 
 }

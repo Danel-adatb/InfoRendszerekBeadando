@@ -19,6 +19,7 @@ export class CartComponent implements OnInit {
   maxPrep$!: Observable<Menu[]>;
   userId!: Pick<User, 'id'>;
   form!: FormGroup;
+  errorMessage: string | undefined = undefined;
 
   constructor(private cartService: CartService, private userService: UserService, private formBuilder: FormBuilder, private router: Router) {}
 
@@ -69,11 +70,11 @@ export class CartComponent implements OnInit {
   }
 
   abortOrder(): void {
-    this.cartService.deleteAll().subscribe(() => {
+    this.cartService.deleteAll().subscribe(() => (
       this.orders$ = this.fetchAll(),
-      this.maxPrep$ = this.getMaxPrep(),
-      this.maxPrice$ = this.getMaxPrice()
-    });
+      this.maxPrice$ = this.getMaxPrice(),
+      this.maxPrep$ = this.getMaxPrep()
+    ));
   }
 
   getDiscount(total: number) {

@@ -2,6 +2,10 @@
     <div class="col col-md-12" *ngIf="isAdmin">
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <h1 class="page-title">Add User</h1>
+
+            <div class="alert alert-danger" *ngIf="errorMessage">
+                {{ errorMessage }}
+            </div>
             
             <div class="form-group">
 

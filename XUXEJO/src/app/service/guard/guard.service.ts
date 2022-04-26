@@ -12,7 +12,7 @@ export class GuardService implements CanActivate {
 
   canActivate(): Observable<boolean> {
     if(!this.userService.isUserLoggedIn$.value) {
-      this.router.navigateByUrl('/register');
+      this.router.navigateByUrl('/login');
     }
     return this.userService.isUserLoggedIn$;
   }

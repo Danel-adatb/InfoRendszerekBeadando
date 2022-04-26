@@ -1,9 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, first, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, first, Observable, tap, throwError } from 'rxjs';
 import { User } from '../model/user';
-import { HandlingService } from './error-handling/error.handling.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +16,12 @@ export class UserService {
     headers: new HttpHeaders({"Content-Type": "application/json"}),
   }
   
-  constructor(private http: HttpClient, private router: Router, private errorHandler: HandlingService) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   register(user: Omit<User, "id">): Observable<User> {
     return this.http.post<User>('/api/register', user, this.httpOptions).pipe(
       first(),
-      catchError(this.errorHandler.handleError<User>("register"))
+      catchError(this.ErrorHandler)
     );
   }
 
@@ -35,16 +34,15 @@ export class UserService {
         this.role = tokenObject.role;
         localStorage.setItem("token", tokenObject.token);
         this.isUserLoggedIn$.next(true);
-        this.router.navigateByUrl('/');
       }),
-
+      catchError(this.ErrorHandler)
     );
   } 
 
   //User Management
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>('/api/users', {responseType: 'json'}).pipe(
-      catchError(this.errorHandler.handleError<User[]>('getUsers', []))
+      catchError(this.ErrorHandler)
     );
   }
 
@@ -52,7 +50,8 @@ export class UserService {
     return this.http.post<User>('/api/createUser', 
     {name: formData.name, number: formData.number, email: formData.email, password: formData.password, role: formData.role},
     this.httpOptions).pipe(
-      catchError(this.errorHandler.handleError<User>('createUser'))
+      first(),
+      catchError(this.ErrorHandler)
     );
   }
 
@@ -60,7 +59,21 @@ export class UserService {
     return this.http.delete<User>('/api/users/'+id, this.httpOptions)
       .pipe(
         first(),
-        catchError(this.errorHandler.handleError<User>("deletePost"))
+        catchError(this.ErrorHandler)
       );
+  }
+
+  private ErrorHandler(error: HttpErrorResponse) {
+    if (error.status === 0) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error('An error occurred:', error.error);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong.
+      console.error(
+        `Backend returned code ${error.status}, body was: `, error.error);
+    }
+    // Return an observable with a user-facing error message.
+    return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 }

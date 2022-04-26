@@ -9,6 +9,10 @@
         </div>
     </div>
 
+    <div class="alert alert-success mt-3" *ngIf="response">
+        {{ response }}
+    </div>
+
     <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3">
         <div class="col mt-4" *ngFor="let order of orderables">
             <div class="card h-100 shadow-sm" >
